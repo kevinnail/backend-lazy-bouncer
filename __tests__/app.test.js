@@ -11,7 +11,6 @@ const mockUser = {
   email: 'test@example.com',
   password: '12345',
 };
-
 const registerAndLogin = async (userProps = {}) => {
   const password = userProps.password ?? mockUser.password;
 
@@ -33,10 +32,6 @@ describe('lazy-bouncer routes', () => {
     return setup(pool);
   });
 
-  afterAll(() => {
-    pool.end();
-  });
-
   it.skip('creates a new user', async () => {
     const res = await request(app).post('/api/v1/users').send(mockUser);
     const { firstName, lastName, email } = mockUser;
@@ -49,7 +44,7 @@ describe('lazy-bouncer routes', () => {
     });
   });
 
-  it.skip('returns the current user', async () => {
+  it('returns the current user', async () => {
     const [agent, user] = await registerAndLogin();
     const me = await agent.get('/api/v1/users/me');
 
@@ -84,5 +79,9 @@ describe('lazy-bouncer routes', () => {
     const res = await agent.get('/api/v1/users');
 
     expect(res.body).toEqual([{ ...user }]);
+  });
+
+  afterAll(() => {
+    pool.end();
   });
 });
